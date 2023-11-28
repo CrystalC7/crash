@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { congigurations } from "./configs";
 import mountainLayerImg from "./assets/mountains_front.png";
+import moon from "./assets/—Pngtree—grey moon free illustration_4452211.png";
 import { spaceObjects } from "./configs";
 
 function App() {
@@ -10,7 +11,9 @@ function App() {
   const mountainLayerImgEl = useRef<HTMLImageElement>();
   const mountainLayerImgCompressed = useRef<any>();
   const flying = useRef<boolean>(false);
-  const deltaTime = 0;
+  const moonElmenent = useRef<HTMLImageElement>(null);
+
+  // @ts-ignore
   let animationId: number | null = null;
   const [bool, setBool] = useState<boolean>(false);
   const spaceObjectsElements = useRef<HTMLImageElement[]>(null);
@@ -35,8 +38,8 @@ function App() {
       context?.save();
       context?.beginPath();
       context && (context.fillStyle = "white");
-      // context && (context.shadowBlur = 100);
-      // context && (context.shadowColor = "white");
+      context && (context.shadowBlur = 10);
+      context && (context.shadowColor = "white");
       context && (context.globalAlpha = this.opacity);
       context?.arc(this.x, this.y, 1, 0, 2 * Math.PI, true);
       context?.fill();
@@ -77,7 +80,7 @@ function App() {
     constructor(width: number, height: number, game: Game) {
       this.x = 0;
       this.y = 0;
-      this.speedY = 4;
+      this.speedY = 5;
       this.width = width;
       this.height = height;
       this.game = game;
@@ -113,7 +116,7 @@ function App() {
       }
     }
   }
-
+  // @ts-ignore
   class SpaceObjects {
     game: Game;
     x: number;
@@ -151,6 +154,40 @@ function App() {
     }
   }
 
+  class Moon {
+    width: number;
+    height: number;
+    speedY: number;
+    y: number;
+    x: number;
+
+    constructor(game: Game) {
+      this.width = 100;
+      this.height = 100;
+      this.x = game.width / 2;
+      this.y = 100;
+      this.speedY = 1;
+    }
+
+    draw(context: CanvasRenderingContext2D | null) {
+      context && context.save();
+      context && (context.shadowBlur = 20);
+      context && (context.shadowColor = "white");
+
+      context &&
+        context.drawImage(
+          moonElmenent.current!,
+          this.x,
+          this.y,
+          this.width,
+          this.height
+        );
+      context && context.restore();
+    }
+
+    update() {}
+  }
+
   class Game {
     width: number;
     height: number;
@@ -162,15 +199,17 @@ function App() {
     fallingStars: FallingStar[];
     fallingSpceObjectInterval: number;
     fallingSpceObjectTimer: number;
+    moon: Moon;
 
     constructor(width: number, height: number, flying: boolean) {
       this.width = width;
       this.height = height;
       this.mountainLayer = new MountainLayer(this.width, this.height, this);
+      this.moon = new Moon(this);
       this.flying = flying;
       this.inititialStars = [];
       this.fallingStars = [];
-      this.fallingStarsInterval = 2000 * 4;
+      this.fallingStarsInterval = 50;
       this.fallingStarsTimer = 0;
       this.fallingSpceObjectInterval = 500;
       this.fallingSpceObjectTimer = 0;
@@ -185,6 +224,7 @@ function App() {
         star.draw(context);
       });
 
+      this.moon.draw(context);
       this.mountainLayer.draw(context);
     }
 
@@ -201,7 +241,7 @@ function App() {
 
       this.mountainLayer.update();
 
-      if (this.flying && this.fallingStarsTimer > this.fallingStarsInterval) {
+      if (this.flying && this.fallingStarsTimer >= this.fallingStarsInterval) {
         this.createFallingStar();
         this.fallingStarsTimer = 0;
       }
@@ -247,6 +287,8 @@ function App() {
 
   const animate = (timeStamp: number) => {
     const deltaTime = timeStamp - canConfig.gameTime;
+    canConfig.gameTime = timeStamp;
+
     context?.clearRect(0, 0, canConfig.canvasWidth, canConfig.canvasHeight);
     initializeGame.draw(context);
     initializeGame.update(deltaTime, flying.current);
@@ -286,6 +328,7 @@ function App() {
         hidden
         alt=""
       />
+      <img hidden src={moon} ref={moonElmenent} alt="moon" />
       <canvas
         ref={(element: HTMLCanvasElement) => (canvas.current = element)}
       ></canvas>
