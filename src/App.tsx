@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { congigurations } from "./configs";
-import mountainLayerImg from "./assets/mountains_front.png";
+import mountainLayerImg from "./assets/mountains.png";
 import moon from "./assets/—Pngtree—grey moon free illustration_4452211.png";
 import { spaceObjects } from "./configs";
 
