@@ -1,3 +1,6 @@
+@import url('https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap');
+
+
 * {
   margin: 0px;
   padding: 0px;
@@ -6,7 +9,7 @@ body {
   box-sizing: border-box;
   display: flex;
   flex-flow: column;
-  justify-content: center;
+  align-items: center;
   padding-top: 50px;
 }
 
@@ -14,6 +17,8 @@ canvas {
   max-width: 100%;
   min-height: 100%;
   background: linear-gradient(#0b1026, #161e42);
+  border-radius: 10px;
+  margin: auto;
 }
 
 button {
@@ -24,6 +29,7 @@ button {
   border: none;
   outline: none;
   cursor: pointer;
+  margin: 40px;
 }
 
 button:active {
